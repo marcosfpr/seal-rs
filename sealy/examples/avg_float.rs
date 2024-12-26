@@ -1,6 +1,6 @@
 use rand::Rng;
 use sealy::{
-	CKKSEncoder, CKKSEncryptionParametersBuilder, CKKSEvaluator, Ciphertext,
+	CKKSEncoder, CKKSEncryptionParametersBuilder, Evaluator, Ciphertext,
 	CoefficientModulusFactory, Context, Decryptor, DegreeType, EncryptionParameters, Encryptor,
 	Error, Evaluator, KeyGenerator, SecurityLevel,
 };
@@ -37,7 +37,7 @@ fn average_ciphertexts(
 	ciphertexts: &[Ciphertext],
 	size: usize,
 ) -> Result<Ciphertext, Error> {
-	let evaluator = CKKSEvaluator::new(ctx)?;
+	let evaluator = Evaluator::new(ctx)?;
 	let cipher = evaluator.add_many(ciphertexts)?;
 
 	let fraction = 1.0 / ciphertexts.len() as f64;

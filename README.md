@@ -62,7 +62,7 @@ cargo add sealy
 Here is a simple example of multiplying a ciphertext array to a plaintext array.
 
 ```python
-from sealy import (BFVEncoder, BfvEncryptionParametersBuilder, BFVEvaluator,
+from sealy import (BFVEncoder, BfvEncryptionParametersBuilder, Evaluator,
                   CoefficientModulus, Context, Decryptor, DegreeType,
                   Encryptor, KeyGenerator, PlainModulus, SecurityLevel)
 
@@ -86,7 +86,7 @@ secret_key = gen.secret_key()
 
 encryptor = Encryptor(ctx, public_key)
 decryptor = Decryptor(ctx, secret_key)
-evaluator = BFVEvaluator(ctx)
+evaluator = Evaluator(ctx)
 
 plaintext = [1, 2, 3]
 factor = [2, 2, 2]
@@ -109,7 +109,7 @@ Equivalent code from above's example, written in rust:
 
 ```rust
 use seal::{
-	BFVEncoder, BFVEvaluator, BfvEncryptionParametersBuilder, CoefficientModulus, Context,
+	BFVEncoder, Evaluator, BfvEncryptionParametersBuilder, CoefficientModulus, Context,
 	Decryptor, DegreeType, Encoder, Encryptor, Evaluator, KeyGenerator, PlainModulus,
 	SecurityLevel,
 };
@@ -133,7 +133,7 @@ fn main() -> anyhow::Result<()> {
 
 	let encryptor = Encryptor::with_public_key(&ctx, &public_key)?;
 	let decryptor = Decryptor::new(&ctx, &secret_key)?;
-	let evaluator = BFVEvaluator::new(&ctx)?;
+	let evaluator = Evaluator::new(&ctx)?;
 
 	let plaintext: Vec<i64> = vec![1, 2, 3];
 	let factor = vec![2, 2, 2];

@@ -1,41 +1,26 @@
 use super::Tensor;
-use crate::{CKKSEvaluator, Context, Error, Evaluator, GaloisKey, RelinearizationKey, Result};
+use crate::{
+	Ciphertext, Error, Evaluator, EvaluatorOps, GaloisKey, Plaintext, RelinearizationKey, Result
+};
 
-/// An evaluator that evaluates a tensor of data.
-pub struct TensorEvaluator<E> {
-	evaluator: E,
+/// An evaluator of tensors. See `Evaluator` for more information.
+pub struct TensorEvaluator {
+	evaluator: Evaluator,
 }
 
-impl<E> TensorEvaluator<E>
-where
-	E: Evaluator,
-{
-	/// Creates a new batch evaluator.
-	pub fn new(evaluator: E) -> Self {
+impl TensorEvaluator {
+	/// Creates a new tensor evaluator.
+	pub fn new(evaluator: Evaluator) -> Self {
 		Self {
 			evaluator,
 		}
 	}
 }
 
-impl TensorEvaluator<CKKSEvaluator> {
-	/// Creates a new tensor evaluator.
-	pub fn ckks(ctx: &Context) -> Result<Self> {
-		Ok(Self {
-			evaluator: CKKSEvaluator::new(ctx)?,
-		})
-	}
-}
+impl EvaluatorOps for TensorEvaluator {
+	type Plaintext = Tensor<Plaintext>;
 
-impl<E> Evaluator for TensorEvaluator<E>
-where
-	E: Evaluator,
-	E::Ciphertext: Clone,
-	E::Plaintext: Clone,
-{
-	type Plaintext = Tensor<E::Plaintext>;
-
-	type Ciphertext = Tensor<E::Ciphertext>;
+	type Ciphertext = Tensor<Ciphertext>;
 
 	fn negate_inplace(
 		&self,
@@ -371,4 +356,30 @@ where
 
 		Ok(())
 	}
+
+	fn rescale_to_next_inplace(
+		&self,
+		a: &Self::Ciphertext,
+	) -> Result<()> {
+        for value in a.iter() {
+            self.evaluator.rescale_to_next_inplace(value)?;
+        }
+
+        Ok(())
+	}
+
+	fn rescale_to_next(
+		&self,
+		a: &Self::Ciphertext,
+	) -> Result<Self::Ciphertext> {
+        a.map(|value| self.evaluator.rescale_to_next(value)).collect()
+    }
+
+	fn rescale_to(
+		&self,
+		a: &Self::Ciphertext,
+		parms_id: &[u64],
+	) -> Result<Self::Ciphertext> {
+        a.map(|value| self.evaluator.rescale_to(value, parms_id)).collect()
+    }
 }

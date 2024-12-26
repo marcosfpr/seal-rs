@@ -2,7 +2,7 @@ use criterion::{black_box, criterion_group, criterion_main, Criterion};
 
 use rand::Rng;
 use sealy::{
-	BFVEncoder, BFVEncryptionParametersBuilder, BFVEvaluator, Ciphertext,
+	BFVEncoder, BFVEncryptionParametersBuilder, Evaluator, Ciphertext,
 	CoefficientModulusFactory, Context, DegreeType, EncryptionParameters, Encryptor, Error,
 	Evaluator, KeyGenerator, PlainModulusFactory, SecurityLevel,
 };
@@ -47,7 +47,7 @@ fn aggregate(
 	ciphertexts: &[Ciphertext],
 	dimension: usize,
 ) -> Result<Ciphertext, Error> {
-	let evaluator = BFVEvaluator::new(ctx)?;
+	let evaluator = Evaluator::new(ctx)?;
 	let cipher = evaluator.add_many(ciphertexts)?;
 
 	let fraction = 1.0 / ciphertexts.len() as f64;

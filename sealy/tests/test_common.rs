@@ -5,7 +5,7 @@ pub fn run_bfv_test<F>(
 	degree: DegreeType,
 	test: F,
 ) where
-	F: FnOnce(Decryptor, BFVEncoder, Encryptor<SymAsym>, BFVEvaluator, KeyGenerator),
+	F: FnOnce(Decryptor, BFVEncoder, Encryptor<SymAsym>, Evaluator, KeyGenerator),
 {
 	let params = BFVEncryptionParametersBuilder::new()
 		.set_poly_modulus_degree(degree)
@@ -26,7 +26,7 @@ pub fn run_bfv_test<F>(
 
 	let encryptor = Encryptor::with_public_and_secret_key(&ctx, &public_key, &private_key).unwrap();
 	let decryptor = Decryptor::new(&ctx, &private_key).unwrap();
-	let evaluator = BFVEvaluator::new(&ctx).unwrap();
+	let evaluator = Evaluator::new(&ctx).unwrap();
 
 	test(decryptor, encoder, encryptor, evaluator, gen);
 }

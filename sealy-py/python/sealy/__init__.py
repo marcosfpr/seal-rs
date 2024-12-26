@@ -2,9 +2,9 @@
 
 from sealy.parameters import (BfvEncryptionParametersBuilder,
                               CkksEncryptionParametersBuilder)
-from sealy.sealy import (AsymmetricComponents, BFVEncoder, BFVEvaluator,
+from sealy.sealy import (AsymmetricComponents, BFVEncoder, Evaluator,
                          Ciphertext, CiphertextTensor, CKKSEncoder,
-                         CKKSEvaluator, CKKSTensorEncoder, CKKSTensorEvaluator,
+                         Evaluator, CKKSTensorEncoder, CKKSTensorEvaluator,
                          CoefficientModulus, Context, Decryptor, DegreeType,
                          EncryptionParameters, Encryptor, GaloisKey,
                          KeyGenerator, MemoryPool, Modulus, PlainModulus,
@@ -32,8 +32,8 @@ __all__ = [
     "Encryptor",
     "AsymmetricComponents",
     "Decryptor",
-    "BFVEvaluator",
-    "CKKSEvaluator",
+    "Evaluator",
+    "Evaluator",
     "CKKSEncoder",
     "TensorEncryptor",
     "TensorDecryptor",

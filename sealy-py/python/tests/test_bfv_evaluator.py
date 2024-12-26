@@ -1,13 +1,13 @@
 from typing import Tuple
 
-from sealy import (BFVEncoder, BfvEncryptionParametersBuilder, BFVEvaluator,
+from sealy import (BFVEncoder, BfvEncryptionParametersBuilder, Evaluator,
                    CoefficientModulus, Context, Decryptor, DegreeType,
                    Encryptor, KeyGenerator, PlainModulus, SecurityLevel)
 
 
 def run_bfv_test() -> (
     Tuple[
-        "Decryptor", "BFVEncoder", "Encryptor", "BFVEvaluator", "KeyGenerator"
+        "Decryptor", "BFVEncoder", "Encryptor", "Evaluator", "KeyGenerator"
     ]
 ):
     params = (
@@ -30,7 +30,7 @@ def run_bfv_test() -> (
 
     encryptor = Encryptor(ctx, public_key)
     decryptor = Decryptor(ctx, secret_key)
-    evaluator = BFVEvaluator(ctx)
+    evaluator = Evaluator(ctx)
 
     return (decryptor, encoder, encryptor, evaluator, gen)
 
@@ -58,7 +58,7 @@ def test_can_create_and_destroy_evaluator():
     )
 
     ctx = Context(params, False, SecurityLevel(128))
-    evaluator = BFVEvaluator(ctx)
+    evaluator = Evaluator(ctx)
     del evaluator
 
 

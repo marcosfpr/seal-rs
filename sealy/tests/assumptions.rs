@@ -175,7 +175,7 @@ fn relinearization_consumes_no_noise_budget() {
 
 	let encryptor = Encryptor::with_public_and_secret_key(&ctx, &public_key, &private_key).unwrap();
 	let decryptor = Decryptor::new(&ctx, &private_key).unwrap();
-	let eval = BFVEvaluator::new(&ctx).unwrap();
+	let eval = Evaluator::new(&ctx).unwrap();
 
 	// Modulus should be 114_689
 	let mut data = Vec::with_capacity(8192);
@@ -232,7 +232,7 @@ fn addition_noise_less_equal_operands() {
 
 	let encryptor = Encryptor::with_public_and_secret_key(&ctx, &public_key, &private_key).unwrap();
 	let decryptor = Decryptor::new(&ctx, &private_key).unwrap();
-	let eval = BFVEvaluator::new(&ctx).unwrap();
+	let eval = Evaluator::new(&ctx).unwrap();
 
 	// Modulus should be 114_689
 	let mut data = Vec::with_capacity(8192);

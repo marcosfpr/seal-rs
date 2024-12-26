@@ -3,10 +3,10 @@ use crate::{
 	context::PyContext,
 	keys::{PyPublicKey, PyRelinearizationKey, PySecretKey},
 	plaintext::PyPlaintext,
-	PyCKKSEvaluator,
+	PyEvaluator,
 };
 use pyo3::prelude::*;
-use sealy::{Evaluator, FromChunk, ToChunk};
+use sealy::{EvaluatorOps, FromChunk, ToChunk};
 
 #[derive(Debug, Clone)]
 #[pyclass(module = "sealy", name = "PlaintextTensor")]
@@ -234,18 +234,93 @@ impl PyCKKSTensorEncoder {
 	}
 }
 
-// An evaluator that evaluates batches of data.
-#[pyclass(module = "sealy", name = "CKKSTensorEvaluator")]
-pub struct PyCKKSTensorEvaluator {
-	inner: sealy::TensorEvaluator<sealy::CKKSEvaluator>,
+
+/// An encoder that encodes data in batches.
+#[pyclass(module = "sealy", name = "BFVTensorEncoder")]
+pub struct PyBFVTensorEncoder {
+	inner: sealy::TensorEncoder<sealy::BFVEncoder>,
 }
 
 #[pymethods]
-impl PyCKKSTensorEvaluator {
+impl PyBFVTensorEncoder {
+	/// Creates a new TensorEncoder.
+	#[new]
+	fn new(
+		ctx: &PyContext,
+	) -> PyResult<Self> {
+		let encoder = sealy::BFVEncoder::new(&ctx.inner).map_err(|e| {
+			PyErr::new::<pyo3::exceptions::PyRuntimeError, _>(format!(
+				"Failed to create CKKSEncoder: {:?}",
+				e
+			))
+		})?;
+		let inner = sealy::TensorEncoder::new(encoder);
+		Ok(Self {
+			inner,
+		})
+	}
+
+	/// Returns the number of slots in this encoder produces.
+	fn get_slot_count(&self) -> usize {
+		self.inner.get_slot_count()
+	}
+
+	/// Encodes the given data into a plaintext.
+	///
+	/// # Arguments
+	/// * `data` - The data to encode.
+	///
+	/// # Returns
+	/// The encoded plaintext.
+	fn encode_int(
+		&self,
+		data: Vec<i64>,
+	) -> PyResult<PyPlaintextTensor> {
+		let batch = self.inner.encode_i64(&data).map_err(|e| {
+			PyErr::new::<pyo3::exceptions::PyRuntimeError, _>(format!(
+				"Failed to encode batch: {:?}",
+				e
+			))
+		})?;
+		Ok(PyPlaintextTensor {
+			inner: batch,
+		})
+	}
+
+	/// Decodes the given plaintext into data.
+	///
+	/// # Arguments
+	/// * `batch` - The encoded data.
+	///
+	/// # Returns
+	/// The decoded data.
+	fn decode_int(
+		&self,
+		batch: PyPlaintextTensor,
+	) -> PyResult<Vec<i64>> {
+		let data = self.inner.decode_i64(&batch.inner).map_err(|e| {
+			PyErr::new::<pyo3::exceptions::PyRuntimeError, _>(format!(
+				"Failed to decode batch: {:?}",
+				e
+			))
+		})?;
+
+		Ok(data)
+	}
+}
+
+// An evaluator that evaluates batches of data.
+#[pyclass(module = "sealy", name = "CKKSTensorEvaluator")]
+pub struct PyTensorEvaluator {
+	inner: sealy::TensorEvaluator,
+}
+
+#[pymethods]
+impl PyTensorEvaluator {
 	/// Creates a new TensorEvaluator.
 	#[new]
 	fn new(ctx: &PyContext) -> PyResult<Self> {
-		let evaluator = PyCKKSEvaluator::new(ctx)?;
+		let evaluator = PyEvaluator::new(ctx)?;
 
 		let inner = sealy::TensorEvaluator::new(evaluator.inner);
 

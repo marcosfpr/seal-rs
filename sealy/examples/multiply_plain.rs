@@ -1,5 +1,5 @@
 use sealy::{
-	BFVEncoder, BFVEncryptionParametersBuilder, BFVEvaluator, CoefficientModulusFactory, Context,
+	BFVEncoder, BFVEncryptionParametersBuilder, Evaluator, CoefficientModulusFactory, Context,
 	Decryptor, DegreeType, Encryptor, Evaluator, KeyGenerator, PlainModulusFactory, SecurityLevel,
 };
 
@@ -22,7 +22,7 @@ fn main() -> anyhow::Result<()> {
 
 	let encryptor = Encryptor::with_public_key(&ctx, &public_key)?;
 	let decryptor = Decryptor::new(&ctx, &secret_key)?;
-	let evaluator = BFVEvaluator::new(&ctx)?;
+	let evaluator = Evaluator::new(&ctx)?;
 
 	let plaintext: Vec<i64> = vec![1, 2, 3];
 	let factor = vec![2, 2, 2];

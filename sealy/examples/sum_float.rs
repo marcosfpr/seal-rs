@@ -1,5 +1,5 @@
 use sealy::{
-	CKKSEncoder, CKKSEncryptionParametersBuilder, CKKSEvaluator, CoefficientModulusFactory,
+	CKKSEncoder, CKKSEncryptionParametersBuilder, Evaluator, CoefficientModulusFactory,
 	Context, Decryptor, DegreeType, EncryptionParameters, Encryptor, Error, Evaluator,
 	KeyGenerator, SecurityLevel,
 };
@@ -28,7 +28,7 @@ fn main() -> Result<(), Error> {
 	let encryptor = Encryptor::with_public_and_secret_key(&ctx, &public_key, &private_key)?;
 	let decryptor = Decryptor::new(&ctx, &private_key)?;
 
-	let evaluator = CKKSEvaluator::new(&ctx)?;
+	let evaluator = Evaluator::new(&ctx)?;
 
 	let x = 5.2;
 	let y = 3.3;

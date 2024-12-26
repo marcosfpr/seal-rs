@@ -18,7 +18,7 @@ use crate::context::PyContext;
 use crate::decryptor::PyDecryptor;
 use crate::encoder::{PyBFVEncoder, PyCKKSEncoder};
 use crate::encryptor::{PyAsymmetricComponents, PyEncryptor};
-use crate::evaluator::{PyBFVEvaluator, PyCKKSEvaluator};
+use crate::evaluator::PyEvaluator;
 use crate::keys::{PyGaloisKey, PyKeyGenerator, PyPublicKey, PyRelinearizationKey, PySecretKey};
 use crate::memory::PyMemoryPool;
 use crate::parameters::{
@@ -28,7 +28,7 @@ use crate::parameters::{
 use crate::plaintext::PyPlaintext;
 use crate::poly_array::PyPolynomialArray;
 use crate::tensor::{
-	PyCKKSTensorEncoder, PyCKKSTensorEvaluator, PyCiphertextTensor, PyPlaintextTensor,
+	PyCKKSTensorEncoder, PyBFVTensorEncoder, PyTensorEvaluator, PyCiphertextTensor, PyPlaintextTensor,
 	PyTensorDecryptor, PyTensorEncryptor,
 };
 
@@ -59,14 +59,14 @@ fn sealy(m: &Bound<'_, PyModule>) -> PyResult<()> {
 	m.add_class::<PyAsymmetricComponents>()?;
 	m.add_class::<PyEncryptor>()?;
 	m.add_class::<PyDecryptor>()?;
-	m.add_class::<PyBFVEvaluator>()?;
-	m.add_class::<PyCKKSEvaluator>()?;
+	m.add_class::<PyEvaluator>()?;
 
 	// Batch operations: maybe will be drepecated.
 	m.add_class::<PyPlaintextTensor>()?;
 	m.add_class::<PyCiphertextTensor>()?;
 	m.add_class::<PyCKKSTensorEncoder>()?;
-	m.add_class::<PyCKKSTensorEvaluator>()?;
+	m.add_class::<PyBFVTensorEncoder>()?;
+	m.add_class::<PyTensorEvaluator>()?;
 	m.add_class::<PyTensorEncryptor>()?;
 	m.add_class::<PyTensorDecryptor>()?;
 

@@ -1001,7 +1001,7 @@ class Decryptor:
         """
         ...
 
-class BFVEvaluator:
+class Evaluator:
     """
     Evaluates operations on BFV ciphertexts.
     """
@@ -1147,7 +1147,7 @@ class BFVEvaluator:
         """
         ...
 
-class CKKSEvaluator:
+class Evaluator:
     """
     Evaluates operations on BFV ciphertexts.
     """
