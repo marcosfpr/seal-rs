@@ -4,5 +4,5 @@
 /// on multiple ciphertexts at once, dribbling the size limits of the scheme.
 pub mod tensor;
 
-// /// Sgn approximation for the SEAL library.
-// pub mod sgn;
+/// Polynomial approximation of some utility functions. 
+pub mod ops;

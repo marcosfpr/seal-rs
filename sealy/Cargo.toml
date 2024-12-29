@@ -56,6 +56,9 @@ name = "multiply_plain"
 [[example]]
 name = "encode_float"
 
+[[example]]
+name = "polynomial"
+
 [[bench]]
 name = "ckks_bench"
 harness = false
@@ -67,4 +70,6 @@ harness = false
 [[bench]]
 name = "tensor_bench"
 harness = false
+
+
 

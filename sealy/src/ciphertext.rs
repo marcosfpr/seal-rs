@@ -119,6 +119,20 @@ impl Ciphertext {
 
 		result
 	}
+
+    /// Returns the scale of the ciphertext.
+    pub fn get_scale(&self) -> f32 {
+
+		let mut value: f64 = 0;
+
+		try_seal!(unsafe {
+			bindgen::Ciphertext_Scale(self.get_handle(), index as u64, &mut value)
+		})?;
+
+		Ok(value)
+    }
+
+
 }
 
 impl Debug for Ciphertext {

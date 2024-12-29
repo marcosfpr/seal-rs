@@ -1,16 +1,23 @@
 //! Sign function as a polynomial approximation
 
-use crate::{Context, RelinearizationKey, Result};
-
-mod ckks;
-mod bfv;
+use crate::{Ciphertext, Context, Evaluator, RelinearizationKey, Result};
 
 
 /// [Evaluator] extension that allows to evaluate the sign of the ciphertext.
 /// Useful for performing comparisons between ciphertexts.
-pub trait SignEvaluator {
+pub trait EvaluationOpsExt {
     /// The type of the ciphertext.
     type Ciphertext;
+
+    /// Evaluates the sign of the ciphertext.
+    ///
+    /// # Arguments
+    /// * `a` - The ciphertext to evaluate the sign of.
+    fn sign(
+		&self,
+		a: &mut Self::Ciphertext,
+		relin_keys: &RelinearizationKey,
+	) -> Result<Self::Ciphertext>;
 
     /// Evaluates the sign of the ciphertext.
     ///
@@ -19,26 +26,57 @@ pub trait SignEvaluator {
     fn sign_inplace(
 		&self,
 		a: &mut Self::Ciphertext,
-        ctx: &Context,
 		relin_keys: &RelinearizationKey,
 	) -> Result<()>;
+}
+
+impl EvaluationOpsExt for Evaluator {
+	type Ciphertext = Ciphertext;
+
+	fn sign_inplace(
+		&self,
+		a: &mut Self::Ciphertext,
+		relin_keys: &RelinearizationKey,
+	) -> crate::Result<()> {
+		// let evaluator = Evaluator::new(ctx)?;
+
+		// let scale = 2.0_f64.powi(40);
+		// let encoder = CKKSEncoder::new(ctx, scale)?;
+
+		// let plain_poly_3 = encoder.encode_f64(&COEFFS_N3)?;
+		// let plain_poly_7 = encoder.encode_f64(&COEFFS_N7)?;
+		// let plain_poly_15 = encoder.encode_f64(&COEFFS_N15)?;
+
+		// evaluator.multiply_plain_inplace(a, &plain_poly_3)?;
+		// evaluator.relinearize_inplace(a, relin_keys)?;
+		// // TODO: rescale to next inplace
+
+		// evaluator.multiply_plain_inplace(a, &plain_poly_7)?;
+		// evaluator.relinearize_inplace(a, relin_keys)?;
+		// // TODO: rescale to next inplace
+
+		// for i in 0..2 {
+		// 	evaluator.multiply_plain_inplace(a, &plain_poly_15)?;
+		// 	evaluator.relinearize_inplace(a, relin_keys)?;
+		// 	// TODO: rescale to next inplace
+		// }
+
+		// Ok(())
+        todo!()
+	}
+
+	fn sign(
+		&self,
+		a: &mut Self::Ciphertext,
+		relin_keys: &RelinearizationKey,
+	) -> crate::Result<Self::Ciphertext> {
+		todo!()
+	}
 }
 
 
 /// Coefficients for the polynomial approximation of the sign function.
 pub mod coefficients {
-    pub static COEFFS_N4: &[f64] = &[
-        0.0,
-        315.0 / 128.0,
-        0.0,
-        -420.0 / 128.0,
-        0.0,
-        378.0 / 128.0,
-        0.0,
-        -180.0 / 128.0,
-        0.0,
-        35.0 / 128.0,
-    ];
 
     pub static COEFFS_N1: &[f64] = &[
         0.0,
@@ -56,6 +94,20 @@ pub mod coefficients {
         21.0 / 16.0,
         0.0,
         -5.0 / 16.0,
+    ];
+
+
+    pub static COEFFS_N4: &[f64] = &[
+        0.0,
+        315.0 / 128.0,
+        0.0,
+        -420.0 / 128.0,
+        0.0,
+        378.0 / 128.0,
+        0.0,
+        -180.0 / 128.0,
+        0.0,
+        35.0 / 128.0,
     ];
 
     pub static COEFFS_N7: &[f64] = &[
