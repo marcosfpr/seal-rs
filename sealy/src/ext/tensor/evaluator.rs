@@ -1,6 +1,6 @@
 use super::Tensor;
 use crate::{
-	Ciphertext, Error, Evaluator, EvaluatorOps, GaloisKey, Plaintext, RelinearizationKey, Result
+	Ciphertext, Error, Evaluator, EvaluatorOps, GaloisKey, Plaintext, RelinearizationKey, Result,
 };
 
 /// An evaluator of tensors. See `Evaluator` for more information.
@@ -206,6 +206,30 @@ impl EvaluatorOps for TensorEvaluator {
 		Ok(())
 	}
 
+	fn mod_switch_to_inplace(
+		&self,
+		a: &Self::Ciphertext,
+		parms_id: &[u64],
+	) -> Result<()> {
+		for value in a.iter() {
+			self.evaluator.mod_switch_to_inplace(value, parms_id)?;
+		}
+
+		Ok(())
+	}
+
+	fn mod_switch_to_inplace_plaintext(
+		&self,
+		a: &Self::Plaintext,
+		parms_id: &[u64],
+	) -> Result<()> {
+		for value in a.iter() {
+			self.evaluator.mod_switch_to_inplace_plaintext(value, parms_id)?;
+		}
+
+		Ok(())
+	}
+
 	fn exponentiate(
 		&self,
 		a: &Self::Ciphertext,
@@ -361,25 +385,27 @@ impl EvaluatorOps for TensorEvaluator {
 		&self,
 		a: &Self::Ciphertext,
 	) -> Result<()> {
-        for value in a.iter() {
-            self.evaluator.rescale_to_next_inplace(value)?;
-        }
+		for value in a.iter() {
+			self.evaluator.rescale_to_next_inplace(value)?;
+		}
 
-        Ok(())
+		Ok(())
 	}
 
 	fn rescale_to_next(
 		&self,
 		a: &Self::Ciphertext,
 	) -> Result<Self::Ciphertext> {
-        a.map(|value| self.evaluator.rescale_to_next(value)).collect()
-    }
+		a.map(|value| self.evaluator.rescale_to_next(value))
+			.collect()
+	}
 
 	fn rescale_to(
 		&self,
 		a: &Self::Ciphertext,
 		parms_id: &[u64],
 	) -> Result<Self::Ciphertext> {
-        a.map(|value| self.evaluator.rescale_to(value, parms_id)).collect()
-    }
+		a.map(|value| self.evaluator.rescale_to(value, parms_id))
+			.collect()
+	}
 }

@@ -128,6 +128,19 @@ impl Plaintext {
 		coeff
 	}
 
+
+    /// Returns the scale of the plaintext.
+    pub fn get_scale(&self) -> Result<f64> {
+
+		let mut value: f64 = 0.0;
+
+		try_seal!(unsafe {
+			bindgen::Plaintext_Scale(self.get_handle(), &mut value)
+		})?;
+
+		Ok(value)
+    }
+
 	/// Sets the coefficient at the given location. Coefficients are ordered
 	/// from lowest to highest degree, with the first value being the constant
 	/// coefficient.
@@ -146,6 +159,7 @@ impl Plaintext {
 		try_seal!(unsafe { bindgen::Plaintext_SetCoeffAt(self.get_handle(), index as u64, value) })
 			.expect("Fatal error in Plaintext::index().");
 	}
+
 
 	/// Sets the number of coefficients this plaintext can hold.
 	pub fn resize(

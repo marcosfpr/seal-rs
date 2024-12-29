@@ -72,8 +72,6 @@ impl CKKSEncoder {
 	/// scale is more than enough.
 	///
 	///  * `data` - The `2xN` matrix of integers modulo plaintext modulus to batch
-	///  * `scale` - The scaling factor
-	///  * `context` - The context
 	pub fn encode_f64(
 		&self,
 		data: &[f64],
@@ -100,6 +98,48 @@ impl CKKSEncoder {
 
 		Ok(plaintext)
 	}
+
+	/// Creates a plaintext from a given f64 value.
+	///
+	/// The floating-point coefficients of `data`
+	/// will be scaled up by the parameter `scale'. This is necessary since even in
+	/// the CKKS scheme the plaintext elements are fundamentally polynomials with
+	/// integer coefficients. It is instructive to think of the scale as determining
+	/// the bit-precision of the encoding; naturally it will affect the precision of
+	/// the result.
+	/// In CKKS the message is stored modulo coeff_modulus (in BFV it is stored modulo
+	/// plain_modulus), so the scaled message must not get too close to the total size
+	/// of coeff_modulus. In this case our coeff_modulus is quite large (200 bits) so
+	/// we have little to worry about in this regard. For this simple example a 30-bit
+	/// scale is more than enough.
+	///
+    /// * `value` - The f64 value to encode
+    pub fn encode_single_f64(
+        &self,
+        value: f64,
+    ) -> Result<Plaintext> {
+        let mem = MemoryPool::new()?;
+
+        let plaintext = Plaintext::new()?;
+
+        // I pinky promise SEAL won't mutate data, the C bindings just aren't
+        // const correct.
+        try_seal!(unsafe {
+            let mut parms_id = self.parms_id.clone();
+            let parms_id_ptr = parms_id.as_mut_ptr();
+            bindgen::CKKSEncoder_Encode3(
+                self.get_handle(),
+                value,
+                parms_id_ptr,
+                self.scale,
+                plaintext.get_handle(),
+                mem.get_handle(),
+            )
+        })?;
+
+        Ok(plaintext)
+    }
+
 
 	/// Inverse of encode. This function decodes a given plaintext into
 	/// a list of f64 elements.

@@ -59,10 +59,10 @@ pub struct Evaluator {
 
 /// Operations provided by the evaluator.
 pub trait EvaluatorOps {
-    /// The plaintext type.
-    type Plaintext;
-    /// The ciphertext type.
-    type Ciphertext;
+	/// The plaintext type.
+	type Plaintext;
+	/// The ciphertext type.
+	type Ciphertext;
 
 	/// Negates a ciphertext inplace.
 	///   * `a` - the value to negate
@@ -206,6 +206,23 @@ pub trait EvaluatorOps {
 		a: &Self::Plaintext,
 	) -> Result<()>;
 
+	/// Given a ciphertext encrypted modulo q_1...q_k, this function switches the modulus down until the parameters
+	/// reach the given parms_id and stores the result in the destination parameter. Dynamic memory allocations in the
+	/// process are allocated from the memory pool pointed to by the given MemoryPoolHandle.
+	fn mod_switch_to_inplace(
+		&self,
+		a: &Self::Ciphertext,
+		parms_id: &[u64],
+	) -> Result<()>;
+
+	/// Given an NTT transformed plaintext modulo q_1...q_k, this function switches the modulus down until the
+	/// parameters reach the given parms_id and stores the result in the destination parameter.
+	fn mod_switch_to_inplace_plaintext(
+		&self,
+		a: &Self::Plaintext,
+		parms_id: &[u64],
+	) -> Result<()>;
+
 	/// This functions raises encrypted to a power and stores the result in the destination parameter. Dynamic
 	/// memory allocations in the process are allocated from the memory pool pointed to by the given
 	/// MemoryPoolHandle. The exponentiation is done in a depth-optimal order, and relinearization is performed
@@ -274,7 +291,6 @@ pub trait EvaluatorOps {
 		a: &Self::Ciphertext,
 		b: &Self::Plaintext,
 	) -> Result<Self::Ciphertext>;
-
 
 	/// Multiply a ciphertext by a plaintext and store in the ciphertext.
 	///  * `a` - the ciphertext
@@ -393,7 +409,6 @@ pub trait EvaluatorOps {
 		a: &Self::Ciphertext,
 		parms_id: &[u64],
 	) -> Result<Self::Ciphertext>;
-
 }
 
 impl Evaluator {
@@ -416,8 +431,8 @@ impl Evaluator {
 }
 
 impl EvaluatorOps for Evaluator {
-    type Plaintext = Plaintext;
-    type Ciphertext = Ciphertext;
+	type Plaintext = Plaintext;
+	type Ciphertext = Ciphertext;
 
 	fn negate_inplace(
 		&self,
@@ -694,6 +709,45 @@ impl EvaluatorOps for Evaluator {
 	) -> Result<()> {
 		try_seal!(unsafe {
 			bindgen::Evaluator_ModSwitchToNext2(self.get_handle(), a.get_handle(), a.get_handle())
+		})?;
+
+		Ok(())
+	}
+
+	fn mod_switch_to_inplace(
+		&self,
+		a: &Self::Ciphertext,
+		parms_id: &[u64],
+	) -> Result<()> {
+		try_seal!(unsafe {
+			let mut parms_id = parms_id.to_vec();
+			let parms_id_ptr = parms_id.as_mut_ptr();
+			bindgen::Evaluator_ModSwitchTo1(
+				self.get_handle(),
+				a.get_handle(),
+				parms_id_ptr,
+				a.get_handle(),
+				null_mut(),
+			)
+		})?;
+
+		Ok(())
+	}
+
+	fn mod_switch_to_inplace_plaintext(
+		&self,
+		a: &Self::Plaintext,
+		parms_id: &[u64],
+	) -> Result<()> {
+		try_seal!(unsafe {
+			let mut parms_id = parms_id.to_vec();
+			let parms_id_ptr = parms_id.as_mut_ptr();
+			bindgen::Evaluator_ModSwitchTo2(
+				self.get_handle(),
+				a.get_handle(),
+				parms_id_ptr,
+				a.get_handle()
+			)
 		})?;
 
 		Ok(())
@@ -1755,7 +1809,6 @@ mod bfv_tests {
 		});
 	}
 }
-
 
 #[cfg(test)]
 mod ckks_tests {
