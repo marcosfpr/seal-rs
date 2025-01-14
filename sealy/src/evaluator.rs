@@ -6,6 +6,7 @@ use std::sync::atomic::Ordering;
 use crate::bindgen;
 use crate::error::*;
 use crate::try_seal;
+use crate::MemoryPool;
 use crate::{Ciphertext, Context, GaloisKey, Plaintext, RelinearizationKey};
 
 /// Provides operations on ciphertexts. Due to the properties of the encryption scheme, the arithmetic operations
@@ -589,13 +590,14 @@ impl EvaluatorOps for Evaluator {
 		a: &mut Ciphertext,
 		b: &Ciphertext,
 	) -> Result<()> {
+		let pool = MemoryPool::new()?;
 		try_seal!(unsafe {
 			bindgen::Evaluator_Multiply(
 				self.get_handle(),
 				a.get_handle(),
 				b.get_handle(),
 				a.get_handle(),
-				null_mut(),
+				pool.get_handle(),
 			)
 		})?;
 
@@ -746,7 +748,7 @@ impl EvaluatorOps for Evaluator {
 				self.get_handle(),
 				a.get_handle(),
 				parms_id_ptr,
-				a.get_handle()
+				a.get_handle(),
 			)
 		})?;
 
@@ -761,6 +763,8 @@ impl EvaluatorOps for Evaluator {
 	) -> Result<Ciphertext> {
 		let c = Ciphertext::new()?;
 
+		let pool = MemoryPool::new()?;
+
 		try_seal!(unsafe {
 			bindgen::Evaluator_Exponentiate(
 				self.get_handle(),
@@ -768,7 +772,7 @@ impl EvaluatorOps for Evaluator {
 				exponent,
 				relin_keys.get_handle(),
 				c.get_handle(),
-				null_mut(),
+				pool.get_handle(),
 			)
 		})?;
 
@@ -781,6 +785,7 @@ impl EvaluatorOps for Evaluator {
 		exponent: u64,
 		relin_keys: &RelinearizationKey,
 	) -> Result<()> {
+		let mem = MemoryPool::new()?;
 		try_seal!(unsafe {
 			bindgen::Evaluator_Exponentiate(
 				self.get_handle(),
@@ -788,7 +793,7 @@ impl EvaluatorOps for Evaluator {
 				exponent,
 				relin_keys.get_handle(),
 				a.get_handle(),
-				null_mut(),
+				mem.get_handle(),
 			)
 		})?;
 
@@ -1154,7 +1159,7 @@ mod bfv_tests {
 
 		let ctx = Context::new(&params, false, SecurityLevel::TC128).unwrap();
 
-		let evaluator = EvaluatorBase::new(&ctx);
+		let evaluator = Evaluator::new(&ctx);
 
 		std::mem::drop(evaluator);
 	}
@@ -1883,7 +1888,7 @@ mod ckks_tests {
 
 		let ctx = Context::new(&params, false, SecurityLevel::TC128).unwrap();
 
-		let evaluator = EvaluatorBase::new(&ctx);
+		let evaluator = Evaluator::new(&ctx);
 
 		std::mem::drop(evaluator);
 	}
@@ -2186,7 +2191,6 @@ mod ckks_tests {
 	}
 
 	#[test]
-	#[ignore = "CKKS relinearize is not yet working"]
 	fn can_relinearize_inplace() {
 		run_ckks_test(|decryptor, encoder, encryptor, evaluator, keygen| {
 			let relin_keys = keygen.create_relinearization_keys().unwrap();
@@ -2252,7 +2256,7 @@ mod ckks_tests {
 	}
 
 	#[test]
-	#[ignore = "CKKS exponentiation is not yet working"]
+	#[ignore = "CKKS exponentiate is not yet working"]
 	fn can_exponentiate() {
 		run_ckks_test(|decryptor, encoder, encryptor, evaluator, keygen| {
 			let relin_keys = keygen.create_relinearization_keys().unwrap();
@@ -2275,7 +2279,7 @@ mod ckks_tests {
 	}
 
 	#[test]
-	#[ignore = "CKKS exponentiation is not yet working"]
+	#[ignore = "CKKS exponentiate_inplace is not yet working"]
 	fn can_exponentiate_inplace() {
 		run_ckks_test(|decryptor, encoder, encryptor, evaluator, keygen| {
 			let relin_keys = keygen.create_relinearization_keys().unwrap();

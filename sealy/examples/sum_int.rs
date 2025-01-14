@@ -1,6 +1,6 @@
 use sealy::{
-	BFVEncoder, BFVEncryptionParametersBuilder, Evaluator, CoefficientModulusFactory, Context,
-	Decryptor, DegreeType, EncryptionParameters, Encryptor, Evaluator, KeyGenerator,
+	BFVEncoder, BFVEncryptionParametersBuilder, CoefficientModulusFactory, Context, Decryptor,
+	DegreeType, EncryptionParameters, Encryptor, Evaluator, Evaluator, KeyGenerator,
 	PlainModulusFactory, SecurityLevel,
 };
 

@@ -29,7 +29,6 @@ impl PyEvaluator {
 		})
 	}
 
-
 	/// Negates a ciphertext.
 	pub fn negate(
 		&self,
@@ -232,4 +231,3 @@ impl PyEvaluator {
 		})
 	}
 }
-

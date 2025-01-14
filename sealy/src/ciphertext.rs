@@ -120,40 +120,35 @@ impl Ciphertext {
 		result
 	}
 
-    /// Returns the scale of the ciphertext.
-    pub fn get_scale(&self) -> Result<f64> {
-
+	/// Returns the scale of the ciphertext.
+	pub fn get_scale(&self) -> Result<f64> {
 		let mut value: f64 = 0.0;
 
-		try_seal!(unsafe {
-			bindgen::Ciphertext_Scale(self.get_handle(), &mut value)
-		})?;
+		try_seal!(unsafe { bindgen::Ciphertext_Scale(self.get_handle(), &mut value) })?;
 
 		Ok(value)
-    }
+	}
 
-    /// Sets the scale of the ciphertext.
-    pub fn set_scale(&self, scale: f64) -> Result<()> {
-        try_seal!(unsafe {
-            bindgen::Ciphertext_SetScale(self.get_handle(), scale)
-        })?;
-        Ok(())
-    }
+	/// Sets the scale of the ciphertext.
+	pub fn set_scale(
+		&self,
+		scale: f64,
+	) -> Result<()> {
+		try_seal!(unsafe { bindgen::Ciphertext_SetScale(self.get_handle(), scale) })?;
+		Ok(())
+	}
 
-    /// Returns the parms_id of the ciphertext.
-    pub fn get_parms_id(&self) -> Result<Vec<u64>> {
+	/// Returns the parms_id of the ciphertext.
+	pub fn get_parms_id(&self) -> Result<Vec<u64>> {
 		let mut parms_id: Vec<u64> =
 			Vec::with_capacity(EncryptionParameters::block_size() as usize);
-        try_seal!(unsafe {
-            let parms_id_ptr = parms_id.as_mut_ptr();
-            bindgen::Ciphertext_ParmsId(self.get_handle(), parms_id_ptr)
-        })?;
+		try_seal!(unsafe {
+			let parms_id_ptr = parms_id.as_mut_ptr();
+			bindgen::Ciphertext_ParmsId(self.get_handle(), parms_id_ptr)
+		})?;
 		unsafe { parms_id.set_len(EncryptionParameters::block_size() as usize) };
-        Ok(parms_id)
-    }
-
-
-
+		Ok(parms_id)
+	}
 }
 
 impl Debug for Ciphertext {

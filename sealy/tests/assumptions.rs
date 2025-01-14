@@ -1,5 +1,5 @@
 mod test_common;
-use sealy::{DegreeType, Evaluator};
+use sealy::{DegreeType, Evaluator, EvaluatorOps};
 
 #[test]
 fn overflow_does_not_bleed_into_other_lanes() {

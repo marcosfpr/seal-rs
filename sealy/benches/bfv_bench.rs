@@ -2,9 +2,9 @@ use criterion::{black_box, criterion_group, criterion_main, Criterion};
 
 use rand::Rng;
 use sealy::{
-	BFVEncoder, BFVEncryptionParametersBuilder, Evaluator, Ciphertext,
-	CoefficientModulusFactory, Context, DegreeType, EncryptionParameters, Encryptor, Error,
-	Evaluator, KeyGenerator, PlainModulusFactory, SecurityLevel,
+	BFVEncoder, BFVEncryptionParametersBuilder, Ciphertext, CoefficientModulusFactory, Context,
+	DegreeType, EncryptionParameters, Encryptor, Error, Evaluator, Evaluator, KeyGenerator,
+	PlainModulusFactory, SecurityLevel,
 };
 
 fn generate_clients_gradients(

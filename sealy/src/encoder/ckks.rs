@@ -113,33 +113,32 @@ impl CKKSEncoder {
 	/// we have little to worry about in this regard. For this simple example a 30-bit
 	/// scale is more than enough.
 	///
-    /// * `value` - The f64 value to encode
-    pub fn encode_single_f64(
-        &self,
-        value: f64,
-    ) -> Result<Plaintext> {
-        let mem = MemoryPool::new()?;
+	/// * `value` - The f64 value to encode
+	pub fn encode_single_f64(
+		&self,
+		value: f64,
+	) -> Result<Plaintext> {
+		let mem = MemoryPool::new()?;
 
-        let plaintext = Plaintext::new()?;
+		let plaintext = Plaintext::new()?;
 
-        // I pinky promise SEAL won't mutate data, the C bindings just aren't
-        // const correct.
-        try_seal!(unsafe {
-            let mut parms_id = self.parms_id.clone();
-            let parms_id_ptr = parms_id.as_mut_ptr();
-            bindgen::CKKSEncoder_Encode3(
-                self.get_handle(),
-                value,
-                parms_id_ptr,
-                self.scale,
-                plaintext.get_handle(),
-                mem.get_handle(),
-            )
-        })?;
+		// I pinky promise SEAL won't mutate data, the C bindings just aren't
+		// const correct.
+		try_seal!(unsafe {
+			let mut parms_id = self.parms_id.clone();
+			let parms_id_ptr = parms_id.as_mut_ptr();
+			bindgen::CKKSEncoder_Encode3(
+				self.get_handle(),
+				value,
+				parms_id_ptr,
+				self.scale,
+				plaintext.get_handle(),
+				mem.get_handle(),
+			)
+		})?;
 
-        Ok(plaintext)
-    }
-
+		Ok(plaintext)
+	}
 
 	/// Inverse of encode. This function decodes a given plaintext into
 	/// a list of f64 elements.

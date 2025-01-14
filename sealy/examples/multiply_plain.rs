@@ -1,6 +1,6 @@
 use sealy::{
-	BFVEncoder, BFVEncryptionParametersBuilder, Evaluator, CoefficientModulusFactory, Context,
-	Decryptor, DegreeType, Encryptor, Evaluator, KeyGenerator, PlainModulusFactory, SecurityLevel,
+	BFVEncoder, BFVEncryptionParametersBuilder, CoefficientModulusFactory, Context, Decryptor,
+	DegreeType, Encryptor, Evaluator, Evaluator, KeyGenerator, PlainModulusFactory, SecurityLevel,
 };
 
 fn main() -> anyhow::Result<()> {

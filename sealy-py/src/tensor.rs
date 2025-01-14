@@ -234,7 +234,6 @@ impl PyCKKSTensorEncoder {
 	}
 }
 
-
 /// An encoder that encodes data in batches.
 #[pyclass(module = "sealy", name = "BFVTensorEncoder")]
 pub struct PyBFVTensorEncoder {
@@ -245,9 +244,7 @@ pub struct PyBFVTensorEncoder {
 impl PyBFVTensorEncoder {
 	/// Creates a new TensorEncoder.
 	#[new]
-	fn new(
-		ctx: &PyContext,
-	) -> PyResult<Self> {
+	fn new(ctx: &PyContext) -> PyResult<Self> {
 		let encoder = sealy::BFVEncoder::new(&ctx.inner).map_err(|e| {
 			PyErr::new::<pyo3::exceptions::PyRuntimeError, _>(format!(
 				"Failed to create CKKSEncoder: {:?}",

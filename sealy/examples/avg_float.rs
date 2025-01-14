@@ -1,8 +1,8 @@
 use rand::Rng;
 use sealy::{
-	CKKSEncoder, CKKSEncryptionParametersBuilder, Evaluator, Ciphertext,
-	CoefficientModulusFactory, Context, Decryptor, DegreeType, EncryptionParameters, Encryptor,
-	Error, Evaluator, KeyGenerator, SecurityLevel,
+	CKKSEncoder, CKKSEncryptionParametersBuilder, Ciphertext, CoefficientModulusFactory, Context,
+	Decryptor, DegreeType, EncryptionParameters, Encryptor, Error, Evaluator, Evaluator,
+	KeyGenerator, SecurityLevel,
 };
 
 fn generate_random_tensor(size: usize) -> Vec<f64> {

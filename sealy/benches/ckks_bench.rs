@@ -2,9 +2,9 @@ use criterion::{black_box, criterion_group, criterion_main, Criterion};
 
 use rand::Rng;
 use sealy::{
-	CKKSEncoder, CKKSEncryptionParametersBuilder, Evaluator, Ciphertext,
-	CoefficientModulusFactory, Context, DegreeType, EncryptionParameters, Encryptor, Error,
-	Evaluator, KeyGenerator, SecurityLevel,
+	CKKSEncoder, CKKSEncryptionParametersBuilder, Ciphertext, CoefficientModulusFactory, Context,
+	DegreeType, EncryptionParameters, Encryptor, Error, Evaluator, Evaluator, KeyGenerator,
+	SecurityLevel,
 };
 
 fn generate_clients_gradients(

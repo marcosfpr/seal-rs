@@ -1,8 +1,7 @@
 use sealy::{
 	Asym, CKKSEncoder, CKKSEncryptionParametersBuilder, Ciphertext, CoefficientModulusFactory,
-	Context, Decryptor, DegreeType, EncryptionParameters, Encryptor,
-	Evaluator, EvaluatorOps, KeyGenerator, Plaintext, RelinearizationKey, SchemeType, SecretKey,
-	SecurityLevel,
+	Context, Decryptor, DegreeType, EncryptionParameters, Encryptor, Evaluator, EvaluatorOps,
+	KeyGenerator, Plaintext, RelinearizationKey, SchemeType, SecretKey, SecurityLevel,
 };
 use std::f64::consts::PI;
 
@@ -97,7 +96,6 @@ fn main() -> anyhow::Result<()> {
 		x1_encrypted.get_scale()?.log2()
 	);
 
-
 	println!(
 		"The exact scales of all three terms are different:\n \
          + Exact scale in PI*x^3: {:.10}\n \
@@ -121,46 +119,46 @@ fn main() -> anyhow::Result<()> {
 
 	println!("Normalize encryption parameters to the lowest level.");
 	let last_parms_id = x3_encrypted.get_parms_id()?;
-    println!("Last parms id: {:?}", last_parms_id);
-	evaluator
-		.mod_switch_to_inplace(&mut x1_encrypted, &last_parms_id)?;
-	evaluator
-		.mod_switch_to_inplace_plaintext(&mut plain_coeff0, &last_parms_id)?;
+	println!("Last parms id: {:?}", last_parms_id);
+	evaluator.mod_switch_to_inplace(&mut x1_encrypted, &last_parms_id)?;
+	evaluator.mod_switch_to_inplace_plaintext(&mut plain_coeff0, &last_parms_id)?;
 
 	println!("Compute PI*x^3 + 0.4*x + 1.");
 
 	let mut encrypted_result = evaluator.add(&x3_encrypted, &x1_encrypted)?;
 	evaluator.add_plain_inplace(&mut encrypted_result, &plain_coeff0)?;
 
-    println!("Decrypt and decode PI*x^3 + 0.4*x + 1.");
-    println!("    + Expected result:");
+	println!("Decrypt and decode PI*x^3 + 0.4*x + 1.");
+	println!("    + Expected result:");
 
-    let mut true_result = Vec::new();
-    for &x in &input {
-        let value = (3.14159265 * x * x * x) + 0.4 * x + 1.0;
-        true_result.push(value);
-    }
-    println!("True result (first 7 values): {:?}", &true_result[0..7]);
+	let mut true_result = Vec::new();
+	for &x in &input {
+		let value = (3.14159265 * x * x * x) + 0.4 * x + 1.0;
+		true_result.push(value);
+	}
+	println!("True result (first 7 values): {:?}", &true_result[0..7]);
 
-    let mut plain_result = decryptor
-        .decrypt(&encrypted_result)?;
+	let mut plain_result = decryptor.decrypt(&encrypted_result)?;
 
-    let mut result = encoder.decode_f64(&plain_result)?;
+	let mut result = encoder.decode_f64(&plain_result)?;
 
-    println!("    + Computed result ...... Correct.");
-    println!("Computed result (first 7 values): {:?}", &result[0..7]);
+	println!("    + Computed result ...... Correct.");
+	println!("Computed result (first 7 values): {:?}", &result[0..7]);
 
-    // Verify correctness
-    for (i, (expected, computed)) in true_result.iter().zip(&result).enumerate().take(7) {
-        let error = (expected - computed).abs();
-        println!("Index {}: Expected = {:.10}, Computed = {:.10}, Error = {:.10}", i, expected, computed, error);
-        assert!(
-            error < 1e-6,
-            "Result verification failed at index {}: error = {:.10}",
-            i,
-            error
-        );
-    }
+	// Verify correctness
+	for (i, (expected, computed)) in true_result.iter().zip(&result).enumerate().take(7) {
+		let error = (expected - computed).abs();
+		println!(
+			"Index {}: Expected = {:.10}, Computed = {:.10}, Error = {:.10}",
+			i, expected, computed, error
+		);
+		assert!(
+			error < 1e-6,
+			"Result verification failed at index {}: error = {:.10}",
+			i,
+			error
+		);
+	}
 
 	Ok(())
 }

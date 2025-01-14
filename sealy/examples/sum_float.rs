@@ -1,7 +1,7 @@
 use sealy::{
-	CKKSEncoder, CKKSEncryptionParametersBuilder, Evaluator, CoefficientModulusFactory,
-	Context, Decryptor, DegreeType, EncryptionParameters, Encryptor, Error, Evaluator,
-	KeyGenerator, SecurityLevel,
+	CKKSEncoder, CKKSEncryptionParametersBuilder, CoefficientModulusFactory, Context, Decryptor,
+	DegreeType, EncryptionParameters, Encryptor, Error, Evaluator, Evaluator, KeyGenerator,
+	SecurityLevel,
 };
 
 fn main() -> Result<(), Error> {

@@ -28,8 +28,8 @@ use crate::parameters::{
 use crate::plaintext::PyPlaintext;
 use crate::poly_array::PyPolynomialArray;
 use crate::tensor::{
-	PyCKKSTensorEncoder, PyBFVTensorEncoder, PyTensorEvaluator, PyCiphertextTensor, PyPlaintextTensor,
-	PyTensorDecryptor, PyTensorEncryptor,
+	PyBFVTensorEncoder, PyCKKSTensorEncoder, PyCiphertextTensor, PyPlaintextTensor,
+	PyTensorDecryptor, PyTensorEncryptor, PyTensorEvaluator,
 };
 
 /// A Python module implemented in Rust. The name of this function must match

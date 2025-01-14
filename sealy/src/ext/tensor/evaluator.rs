@@ -224,7 +224,8 @@ impl EvaluatorOps for TensorEvaluator {
 		parms_id: &[u64],
 	) -> Result<()> {
 		for value in a.iter() {
-			self.evaluator.mod_switch_to_inplace_plaintext(value, parms_id)?;
+			self.evaluator
+				.mod_switch_to_inplace_plaintext(value, parms_id)?;
 		}
 
 		Ok(())
